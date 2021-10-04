@@ -90,6 +90,17 @@ app.post('/todos/:id/edit', (req, res) => {
     .catch((error) => console.log(error))
 })
 
+// delete route
+app.post('/todos/:id/delete', (req, res) => {
+  const id = req.params.id
+
+  todo
+    .findById(id)
+    .then((todo) => todo.remove())
+    .then(() => res.redirect('/'))
+    .catch((error) => console.log(error))
+})
+
 // server listener
 app.listen(port, () => {
   console.log(`Express runnning on port ${port}`)
