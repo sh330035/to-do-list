@@ -65,6 +65,31 @@ app.get('/todos/:id', (req, res) => {
     .catch((error) => console.log(error))
 })
 
+// edit page
+app.get('/todos/:id/edit', (req, res) => {
+  const id = req.params.id
+
+  todo
+    .findById(id)
+    .lean()
+    .then((todo) => res.render('edit', { todo }))
+    .catch((error) => console.log(error))
+})
+
+app.post('/todos/:id/edit', (req, res) => {
+  const id = req.params.id
+  const name = req.body.name
+
+  todo
+    .findById(id)
+    .then((todo) => {
+      todo.name = name
+      return todo.save()
+    })
+    .then(() => res.redirect(`/todos/${id}`))
+    .catch((error) => console.log(error))
+})
+
 // server listener
 app.listen(port, () => {
   console.log(`Express runnning on port ${port}`)
