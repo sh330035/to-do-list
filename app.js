@@ -4,6 +4,8 @@ const app = express()
 const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
 
+const todo = require('./models/todo')
+
 const port = 3000
 
 // connect with mongoose
@@ -28,7 +30,12 @@ app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
 app.get('/', (req, res) => {
-  res.render('index')
+  // 取得資料
+  todo
+    .find()
+    .lean() // 把資料轉換成單純的 JS object
+    .then((todos) => res.render('index', { todos }))
+    .catch((error) => console.error(error))
 })
 
 // server listener
