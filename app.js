@@ -40,6 +40,7 @@ app.get('/', (req, res) => {
     .catch((error) => console.log(error))
 })
 
+// create page
 app.get('/todos/new', (req, res) => {
   res.render('new')
 })
@@ -50,6 +51,17 @@ app.post('/todos', (req, res) => {
   todo
     .create({ name })
     .then(() => res.redirect('/'))
+    .catch((error) => console.log(error))
+})
+
+// detail page
+app.get('/todos/:id', (req, res) => {
+  const id = req.params.id
+
+  todo
+    .findById(id)
+    .lean()
+    .then((todo) => res.render('detail', { todo }))
     .catch((error) => console.log(error))
 })
 
