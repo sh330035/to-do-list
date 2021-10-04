@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
+const bodyParser = require('body-parser')
 
 const todo = require('./models/todo')
 
@@ -28,6 +29,7 @@ db.once('open', () => {
 // template engine
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
   // 取得資料
@@ -35,7 +37,20 @@ app.get('/', (req, res) => {
     .find()
     .lean() // 把資料轉換成單純的 JS object
     .then((todos) => res.render('index', { todos }))
-    .catch((error) => console.error(error))
+    .catch((error) => console.log(error))
+})
+
+app.get('/todos/new', (req, res) => {
+  res.render('new')
+})
+
+app.post('/todos', (req, res) => {
+  const name = req.body.name
+
+  todo
+    .create({ name })
+    .then(() => res.redirect('/'))
+    .catch((error) => console.log(error))
 })
 
 // server listener
